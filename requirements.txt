@@ -1,0 +1,6 @@
+yt-dlp
+ffmpeg-python
+openai-whisper
+transformers
+tqdm
+python-slugify

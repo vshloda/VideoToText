@@ -1,0 +1,8 @@
+services:
+  app:
+    build: .
+    volumes:
+      - .:/app
+    environment:
+      - IMAGEIO_FFMPEG_EXE=/usr/bin/ffmpeg
+    command: ["python", "main.py"]
