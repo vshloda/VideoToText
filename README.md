@@ -67,13 +67,13 @@ To change the Whisper model used for transcription, modify the `Dockerfile` file
 ARG WHISPER_MODEL=small     # Change 'small' to 'medium', 'large', etc.
 ```
 
-Available models include:
+Available <a href="https://github.com/openai/whisper?tab=readme-ov-file#available-models-and-languages">models</a> include:
 - `tiny`
 - `base`
 - `small`
 - `medium`
 - `large`
-https://github.com/openai/whisper?tab=readme-ov-file#available-models-and-languages
+
 ## License
 
 This project is licensed under the MIT License.
