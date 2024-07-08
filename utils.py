@@ -53,7 +53,7 @@ def split_audio(audio, segment_length=30, sample_rate=16000):
         segments.append((segment, start, end))
     return segments
 
-def convert_audio_to_text_whisper(model, audio_path):
+def convert_audio_to_text_whisper(model, audio_path, output_format):
     print("Transcribing audio...")
 
     # load audio
@@ -65,6 +65,7 @@ def convert_audio_to_text_whisper(model, audio_path):
 
     # initialize the text result
     result_list = []
+    result_txt = ''
 
     for segment, start, end in tqdm(segments, desc="Transcribing segments"):
         # check if segment shape is correct
@@ -83,14 +84,20 @@ def convert_audio_to_text_whisper(model, audio_path):
         options = whisper.DecodingOptions()
         result = whisper.decode(model, mel, options)
 
-        result_list.append({
-            "start": format_timestamp(start),
-            "end": format_timestamp(end),
-            "text": result.text.strip()
-        })
+        if output_format == 'txt':
+            result_txt += ' ' + result.text.strip()
+        else:
+            result_list.append({
+                "start": format_timestamp(start),
+                "end": format_timestamp(end),
+                "text": result.text.strip()
+            })
 
     print("Transcription completed.")
-    return result_list
+    if output_format == 'txt':
+        return result_txt
+    else:
+        return result_list
 
 def format_timestamp(seconds):
     hours = seconds // 3600
@@ -113,6 +120,10 @@ def save_json_to_file(data, file_path):
         json.dump(data, file, ensure_ascii=False, indent=4)
     print(f"JSON saved to file: {file_path}")
 
+def save_txt_to_file(data, file_path):
+    with open(file_path, "w") as outfile:
+        outfile.write(data)
+    print(f"TXT saved to file: {file_path}")
 
 def convert_webm_to_mp4(input_path, output_path):
     try:
@@ -120,3 +131,4 @@ def convert_webm_to_mp4(input_path, output_path):
         print(f"Conversion completed: {output_path}")
     except ffmpeg.Error as e:
         print(f"Error occurred: {e.stderr.decode()}")
+

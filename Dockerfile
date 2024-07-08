@@ -1,11 +1,13 @@
-# Використовуємо офіційний образ Python 3.12 на базі Slim
+# Use the official Python 3.12 image based on Slim
 FROM python:3.12-slim
 
-# Встановлюємо залежності
-RUN apt update && apt install -y ffmpeg
+# Set environment variables to non-interactive mode for apt
+ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt install -y git
-# Встановлюємо бібліотеки Python
+# Update GPG keys and install dependencies
+RUN apt clean && apt update && apt install -y ffmpeg git
+
+# Install Python libraries
 COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
@@ -20,11 +22,10 @@ ENV WHISPER_MODEL=$WHISPER_MODEL
 # Download the Whisper model and cache it
 RUN python -c "import whisper; whisper.load_model('$WHISPER_MODEL')"
 
-# Копіюємо файли додатку
+# Copy the application files
 COPY ./ /app
 
-# Встановлюємо робочу директорію
+# Set the working directory
 WORKDIR /app
 
-# Запускаємо додаток
 CMD ["python", "main.py"]
